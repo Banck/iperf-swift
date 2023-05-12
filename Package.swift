@@ -8,7 +8,8 @@ let package = Package(
     products: [
         .library(
             name: "IperfSwift",
-            targets: ["IperfCLib", "IperfSwift"]),
+            targets: ["IperfCLib", "IperfSwift"]
+        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -27,6 +28,7 @@ let package = Package(
         ),
         .testTarget(
             name: "iperf-swiftTests",
-            dependencies: ["IperfSwift"]),
+            dependencies: ["IperfSwift"]
+        ),
     ]
 )
