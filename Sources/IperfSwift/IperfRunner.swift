@@ -248,10 +248,10 @@ public class IperfRunner {
     }
     
     public func start(
-        onReporter: reporterFunctionType?,
-        onFinish: finishFunctionType?,
-        onError: errorFunctionType?,
-        onRunnerState: runnerStateFunctionType?
+        onReporter: reporterFunctionType? = nil,
+        onFinish: finishFunctionType? = nil,
+        onError: errorFunctionType? = nil,
+        onRunnerState: runnerStateFunctionType? = nil
     ) {
         signal(SIGPIPE, SIG_IGN)
         onFinishResultFunction = onFinish
