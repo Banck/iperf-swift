@@ -37,13 +37,15 @@ public enum IperfState: Int8 {
 }
 
 public typealias reporterFunctionType = (_ status: IperfIntervalResult) -> Void
+public typealias finishFunctionType = (_ status: IperfResult) -> Void
 public typealias errorFunctionType = (_ error: IperfError) -> Void
 public typealias runnerStateFunctionType = (_ error: IperfRunnerState) -> Void
 
 public class IperfRunner {
-    private var onReporterFunction: reporterFunctionType = {result in }
-    private var onErrorFunction: errorFunctionType = {error in }
-    private var onRunnerStateFunction: runnerStateFunctionType = {error in }
+    private var onReporterFunction: reporterFunctionType?
+    private var onFinishResultFunction: finishFunctionType?
+    private var onErrorFunction: errorFunctionType?
+    private var onRunnerStateFunction: runnerStateFunctionType?
     
     private var configuration: IperfConfiguration? = nil
     private var observer: NSObjectProtocol? = nil
@@ -51,7 +53,7 @@ public class IperfRunner {
     
     private var state: IperfRunnerState = .ready {
         willSet {
-            onRunnerStateFunction(newValue)
+            onRunnerStateFunction?(newValue)
         }
     }
     
@@ -83,16 +85,28 @@ public class IperfRunner {
         var result = IperfIntervalResult(prot: configuration.prot)
         result.debugDescription = "OK"
         result.state = IperfState(rawValue: runningTest.state) ?? .UNKNOWN
-        
+
         if result.state == .IPERF_DONE {
             state = .finished
             if configuration.role == .server {
                 return
             }
         }
-        
         guard var stream: UnsafeMutablePointer<iperf_stream> = runningTest.streams.slh_first else {
             return
+        }
+        defer {
+            if result.state == .IPERF_DONE || result.state == .DISPLAY_RESULTS {
+                let finalResult = IperfResult(
+                    totalBytes: runningTest.bytes_sent,
+                    totalPackets: stream.pointee.packet_count,
+                    totalLostPackets: stream.pointee.cnt_error,
+                    totalOutoforderPackets: stream.pointee.outoforder_packets,
+                    averageJitter: stream.pointee.jitter,
+                    duration: runningTest.duration
+                )
+                onFinishResultFunction?(finalResult)
+            }
         }
         while true {
             let intervalResultsP: UnsafeMutablePointer<iperf_interval_results>? = extract_iperf_interval_results(OpaquePointer(stream))
@@ -108,7 +122,7 @@ public class IperfRunner {
         // Calculate sum/average over streams
         result.evaulate()
         
-        onReporterFunction(result)
+        onReporterFunction?(result)
     }
     
     // MARK: Private methods
@@ -125,7 +139,7 @@ public class IperfRunner {
         // Server/Client
         iperf_set_test_role(currentTest, configuration.role.rawValue)
         iperf_set_test_server_port(currentTest, Int32(configuration.port))
-        
+
         if let reporterInterval = configuration.reporterInterval {
             iperf_set_test_reporter_interval(currentTest, Double(reporterInterval))
             iperf_set_test_stats_interval(currentTest, Double(reporterInterval))
@@ -136,7 +150,6 @@ public class IperfRunner {
                 iperf_set_test_bind_address(currentTest, addr)
             }
         }
-        
         if configuration.role == .client {
             set_protocol(currentTest, configuration.prot.iperfConfigValue)
             iperf_set_test_reverse(currentTest, configuration.reverse.rawValue)
@@ -215,7 +228,7 @@ public class IperfRunner {
     
     private func onError(_ error: IperfError) {
         state = .error
-        onErrorFunction(error)
+        onErrorFunction?(error)
         
         cleanState()
         // Reset global error code
@@ -225,20 +238,23 @@ public class IperfRunner {
     // MARK: Public methods
     public func start(
         with configuration: IperfConfiguration,
-        _ onReporter: @escaping reporterFunctionType,
-        _ onError: @escaping errorFunctionType,
-        _ onRunnerState: @escaping runnerStateFunctionType)
+        onReporter: reporterFunctionType? = nil,
+        onFinish: finishFunctionType? = nil,
+        onError: errorFunctionType? = nil,
+        onRunnerState: runnerStateFunctionType? = nil)
     {
         self.configuration = configuration
-        self.start(onReporter, onError, onRunnerState)
+        self.start(onReporter: onReporter, onFinish: onFinish, onError: onError, onRunnerState: onRunnerState)
     }
     
     public func start(
-        _ onReporter: @escaping reporterFunctionType,
-        _ onError: @escaping errorFunctionType,
-        _ onRunnerState: @escaping runnerStateFunctionType
+        onReporter: reporterFunctionType?,
+        onFinish: finishFunctionType?,
+        onError: errorFunctionType?,
+        onRunnerState: runnerStateFunctionType?
     ) {
         signal(SIGPIPE, SIG_IGN)
+        onFinishResultFunction = onFinish
         onReporterFunction = onReporter
         onErrorFunction = onError
         onRunnerStateFunction = onRunnerState
