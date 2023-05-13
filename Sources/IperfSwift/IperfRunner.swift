@@ -132,8 +132,8 @@ public class IperfRunner {
         }
         
         var addr: UnsafePointer<Int8>? = nil
-        if let address = configuration.address, !address.isEmpty {
-            addr = NSString(string: address).utf8String
+        if !configuration.address.isEmpty {
+            addr = NSString(string: configuration.address).utf8String
         }
         
         // Server/Client
@@ -153,7 +153,6 @@ public class IperfRunner {
         if configuration.role == .client {
             set_protocol(currentTest, configuration.prot.iperfConfigValue)
             iperf_set_test_reverse(currentTest, configuration.reverse.rawValue)
-            
             var blksize: Int32 = 0
             if configuration.prot == .tcp {
                 blksize = DEFAULT_TCP_BLKSIZE
@@ -176,6 +175,11 @@ public class IperfRunner {
             }
             if let tos = configuration.tos {
                 iperf_set_test_tos(currentTest, Int32(tos))
+            }
+            if let auth = configuration.clientAuth {
+                iperf_set_test_client_username(currentTest, auth.userName)
+                iperf_set_test_client_password(currentTest, auth.password)
+                iperf_set_test_client_rsa_pubkey(currentTest, auth.rsaBase64PublicKey)
             }
         }
     }

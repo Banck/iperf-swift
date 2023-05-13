@@ -13,12 +13,17 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(
+            name: "OpenSSL",
+            url: "https://github.com/krzyzanowskim/OpenSSL",
+            .upToNextMajor(from: "1.1.0")
+        ),
     ],
     targets: [
+
         .target(
             name: "IperfCLib",
-            dependencies: [],
+            dependencies: [.product(name: "OpenSSL", package: "OpenSSL")],
             path: "Sources/IperfCLib"
         ),
         .target(

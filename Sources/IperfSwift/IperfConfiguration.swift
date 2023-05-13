@@ -35,15 +35,28 @@ public enum IperfDirection: Int32 {
     case upload = 0
 }
 
+
+public struct IperfClientAuth {
+    let userName: String
+    let password: String
+    let rsaBase64PublicKey: String
+
+    public init(userName: String, password: String, rsaBase64PublicKey: String) {
+        self.userName = userName
+        self.password = password
+        self.rsaBase64PublicKey = rsaBase64PublicKey
+    }
+}
+
 public struct IperfConfiguration {
-    public var address: String? = "127.0.0.1"
-    public var numStreams = 2
-    public var role = IperfRole.client
-    public var reverse = IperfDirection.download
-    public var port = 5201
-    public var prot = IperfProtocol.tcp
+    public var address: String
+    public var port: Int
+    public var numStreams: Int
+    public var role: IperfRole
+    public var reverse: IperfDirection
+    public var prot: IperfProtocol
     
-    public var rate: UInt64 = UInt64(1024*1024)
+    public var rate: UInt64
     
     public var duration: TimeInterval?
     public var timeout: TimeInterval?
@@ -51,6 +64,35 @@ public struct IperfConfiguration {
     
     public var reporterInterval: TimeInterval?
     public var statsInterval: TimeInterval?
-    
-    public init() {}
+    public var clientAuth: IperfClientAuth?
+
+    public init(
+        address: String,
+        port: Int = 5201,
+        numStreams: Int = 2,
+        role: IperfRole = .client,
+        reverse: IperfDirection = .download,
+        prot: IperfProtocol = .tcp,
+        rate: UInt64 = 1024 * 1024,
+        duration: TimeInterval? = nil,
+        timeout: TimeInterval? = nil,
+        tos: Int? = nil,
+        reporterInterval: TimeInterval? = nil,
+        statsInterval: TimeInterval? = nil,
+        clientAuth: IperfClientAuth? = nil
+    ) {
+        self.address = address
+        self.numStreams = numStreams
+        self.role = role
+        self.reverse = reverse
+        self.port = port
+        self.prot = prot
+        self.rate = rate
+        self.duration = duration
+        self.timeout = timeout
+        self.tos = tos
+        self.reporterInterval = reporterInterval
+        self.statsInterval = statsInterval
+        self.clientAuth = clientAuth
+    }
 }

@@ -137,14 +137,14 @@ const char usage_longstr[] = "Usage: iperf3 [-s|-c host] [options]\n"
 			   "                            total data rate.  Default is 5 seconds)\n"
                            "  --idle-timeout #          restart idle server after # seconds in case it\n"
                            "                            got stuck (default - no timeout)\n"
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
                            "  --rsa-private-key-path    path to the RSA private key used to decrypt\n"
 			   "                            authentication credentials\n"
                            "  --authorized-users-path   path to the configuration file containing user\n"
                            "                            credentials\n"
                            "  --time-skew-threshold     time skew threshold (in seconds) between the server\n"
                            "                            and client during the authentication process\n"
-#endif //HAVE_SSL
+//#endif //HAVE_SSL
                            "Client specific:\n"
                            "  -c, --client <host>[%%<dev>] run in client mode, connecting to <host>\n"
                            "                              (option <dev> equivalent to `--bind-dev <dev>`)\n"
@@ -204,11 +204,11 @@ const char usage_longstr[] = "Usage: iperf3 [-s|-c host] [options]\n"
 #if defined(HAVE_DONT_FRAGMENT)
                            "  --dont-fragment           set IPv4 Don't Fragment flag\n"
 #endif /* HAVE_DONT_FRAGMENT */
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
                            "  --username                username for authentication\n"
                            "  --rsa-public-key-path     path to the RSA public key used to encrypt\n"
                            "                            authentication credentials\n"
-#endif //HAVESSL
+//#endif //HAVESSL
 
 #ifdef NOT_YET_SUPPORTED /* still working on these */
 #endif

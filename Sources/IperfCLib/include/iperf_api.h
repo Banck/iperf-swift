@@ -201,14 +201,14 @@ void    iperf_set_test_congestion_control(struct iperf_test* ipt, char* cc);
 void    iperf_set_test_mss(struct iperf_test* ipt, int mss);
 void    iperf_set_mapped_v4(struct iperf_test* ipt, const int val);
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 void    iperf_set_test_client_username(struct iperf_test *ipt, const char *client_username);
 void    iperf_set_test_client_password(struct iperf_test *ipt, const char *client_password);
 void    iperf_set_test_client_rsa_pubkey(struct iperf_test *ipt, const char *client_rsa_pubkey_base64);
 void    iperf_set_test_server_authorized_users(struct iperf_test *ipt, const char *server_authorized_users);
 void    iperf_set_test_server_skew_threshold(struct iperf_test *ipt, int server_skew_threshold);
 void    iperf_set_test_server_rsa_privkey(struct iperf_test *ipt, const char *server_rsa_privkey_base64);
-#endif // HAVE_SSL
+//#endif // HAVE_SSL
 
 void	iperf_set_test_connect_timeout(struct iperf_test *ipt, int ct);
 

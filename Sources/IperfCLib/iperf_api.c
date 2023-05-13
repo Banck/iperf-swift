@@ -86,11 +86,11 @@
 #include "iperf_util.h"
 #include "iperf_locale.h"
 #include "version.h"
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 #include <openssl/bio.h>
 #include <openssl/err.h>
 #include "iperf_auth.h"
-#endif /* HAVE_SSL */
+//#endif /* HAVE_SSL */
 
 /* Forwards. */
 static int send_parameters(struct iperf_test *test);
@@ -682,7 +682,7 @@ iperf_set_test_unit_format(struct iperf_test *ipt, char unit_format)
     ipt->settings->unit_format = unit_format;
 }
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 void
 iperf_set_test_client_username(struct iperf_test *ipt, const char *client_username)
 {
@@ -718,7 +718,7 @@ iperf_set_test_server_rsa_privkey(struct iperf_test *ipt, const char *server_rsa
 {
     ipt->server_rsa_private_key = load_privkey_from_base64(server_rsa_privkey_base64);
 }
-#endif // HAVE_SSL
+//#endif // HAVE_SSL
 
 void
 iperf_set_test_bind_address(struct iperf_test *ipt, const char *bnd_address)
@@ -1091,13 +1091,13 @@ iperf_parse_arguments(struct iperf_test *test, int argc, char **argv)
 #if defined(HAVE_DONT_FRAGMENT)
 	{"dont-fragment", no_argument, NULL, OPT_DONT_FRAGMENT},
 #endif /* HAVE_DONT_FRAGMENT */
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
     {"username", required_argument, NULL, OPT_CLIENT_USERNAME},
     {"rsa-public-key-path", required_argument, NULL, OPT_CLIENT_RSA_PUBLIC_KEY},
     {"rsa-private-key-path", required_argument, NULL, OPT_SERVER_RSA_PRIVATE_KEY},
     {"authorized-users-path", required_argument, NULL, OPT_SERVER_AUTHORIZED_USERS},
     {"time-skew-threshold", required_argument, NULL, OPT_SERVER_SKEW_THRESHOLD},
-#endif /* HAVE_SSL */
+//#endif /* HAVE_SSL */
 	{"fq-rate", required_argument, NULL, OPT_FQ_RATE},
 	{"pacing-timer", required_argument, NULL, OPT_PACING_TIMER},
 	{"connect-timeout", required_argument, NULL, OPT_CONNECT_TIMEOUT},
@@ -1124,9 +1124,9 @@ iperf_parse_arguments(struct iperf_test *test, int argc, char **argv)
 
     blksize = 0;
     server_flag = client_flag = rate_flag = duration_flag = rcv_timeout_flag = snd_timeout_flag =0;
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
     char *client_username = NULL, *client_rsa_public_key = NULL, *server_rsa_private_key = NULL;
-#endif /* HAVE_SSL */
+//#endif /* HAVE_SSL */
 
     while ((flag = getopt_long(argc, argv, "p:f:i:D1VJvsc:ub:t:n:k:l:P:Rw:B:M:N46S:L:ZO:F:A:T:C:dI:hX:", longopts, NULL)) != -1) {
         switch (flag) {
@@ -1565,7 +1565,7 @@ iperf_parse_arguments(struct iperf_test *test, int argc, char **argv)
             client_flag = 1;
             break;
 #endif /* HAVE_DONT_FRAGMENT */
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
         case OPT_CLIENT_USERNAME:
             client_username = strdup(optarg);
             break;
@@ -1585,7 +1585,7 @@ iperf_parse_arguments(struct iperf_test *test, int argc, char **argv)
                 return -1;
             }
             break;
-#endif /* HAVE_SSL */
+//#endif /* HAVE_SSL */
 	    case OPT_PACING_TIMER:
 		test->settings->pacing_timer = unit_atoi(optarg);
 		client_flag = 1;
@@ -1614,7 +1614,7 @@ iperf_parse_arguments(struct iperf_test *test, int argc, char **argv)
         return -1;
     }
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 
     if (test->role == 's' && (client_username || client_rsa_public_key)){
         i_errno = IECLIENTONLY;
@@ -1676,7 +1676,7 @@ iperf_parse_arguments(struct iperf_test *test, int argc, char **argv)
         }
     }
 
-#endif //HAVE_SSL
+//#endif //HAVE_SSL
 
     // File cannot be transferred using UDP because of the UDP packets header (packet number, etc.)
     if(test->role == 'c' && test->diskfile_name != (char*) 0 && test->protocol->id == Pudp) {
@@ -2017,7 +2017,7 @@ iperf_create_send_timers(struct iperf_test * test)
     return 0;
 }
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 int test_is_authorized(struct iperf_test *test){
     if ( !(test->server_rsa_private_key && test->server_authorized_users)) {
         return 0;
@@ -2049,7 +2049,7 @@ int test_is_authorized(struct iperf_test *test){
     }
     return -1;
 }
-#endif //HAVE_SSL
+//#endif //HAVE_SSL
 
 /**
  * iperf_exchange_parameters - handles the param_Exchange part for client
@@ -2072,7 +2072,7 @@ iperf_exchange_parameters(struct iperf_test *test)
         if (get_parameters(test) < 0)
             return -1;
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
         if (test_is_authorized(test) < 0){
             if (iperf_set_send_state(test, SERVER_ERROR) != 0)
                 return -1;
@@ -2084,7 +2084,7 @@ iperf_exchange_parameters(struct iperf_test *test)
             }
             return -1;
         }
-#endif //HAVE_SSL
+//#endif //HAVE_SSL
 
         if ((s = test->protocol->listen(test)) < 0) {
 	        if (iperf_set_send_state(test, SERVER_ERROR) != 0)
@@ -2208,7 +2208,7 @@ send_parameters(struct iperf_test *test)
 	if (test->settings->dont_fragment)
 	    cJSON_AddNumberToObject(j, "dont_fragment", test->settings->dont_fragment);
 #endif /* HAVE_DONT_FRAGMENT */
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 	/* Send authentication parameters */
 	if (test->settings->client_username && test->settings->client_password && test->settings->client_rsa_pubkey){
 	    int rc = encode_auth_setting(test->settings->client_username, test->settings->client_password, test->settings->client_rsa_pubkey, &test->settings->authtoken);
@@ -2221,7 +2221,7 @@ send_parameters(struct iperf_test *test)
 
 	    cJSON_AddStringToObject(j, "authtoken", test->settings->authtoken);
 	}
-#endif // HAVE_SSL
+//#endif // HAVE_SSL
 	cJSON_AddStringToObject(j, "client_version", IPERF_VERSION);
 
 	if (test->debug) {
@@ -2324,10 +2324,10 @@ get_parameters(struct iperf_test *test)
 	if ((j_p = cJSON_GetObjectItem(j, "dont_fragment")) != NULL)
 	    test->settings->dont_fragment = j_p->valueint;
 #endif /* HAVE_DONT_FRAGMENT */
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 	if ((j_p = cJSON_GetObjectItem(j, "authtoken")) != NULL)
         test->settings->authtoken = strdup(j_p->valuestring);
-#endif //HAVE_SSL
+//#endif //HAVE_SSL
 	if (test->mode && test->protocol->id == Ptcp && has_tcpinfo_retransmits())
 	    test->sender_has_retransmits = 1;
 	if (test->settings->rate)
@@ -2944,7 +2944,7 @@ iperf_free_test(struct iperf_test *test)
             free(xbe);
         }
     }
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 
     if (test->server_rsa_private_key)
       EVP_PKEY_free(test->server_rsa_private_key);
@@ -2962,7 +2962,7 @@ iperf_free_test(struct iperf_test *test)
     if (test->settings->client_rsa_pubkey)
       EVP_PKEY_free(test->settings->client_rsa_pubkey);
     test->settings->client_rsa_pubkey = NULL;
-#endif /* HAVE_SSL */
+//#endif /* HAVE_SSL */
 
     if (test->settings)
     free(test->settings);
@@ -3128,7 +3128,7 @@ iperf_reset_test(struct iperf_test *test)
     test->settings->dont_fragment = 0;
     test->zerocopy = 0;
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
     if (test->settings->authtoken) {
         free(test->settings->authtoken);
         test->settings->authtoken = NULL;
@@ -3145,7 +3145,7 @@ iperf_reset_test(struct iperf_test *test)
         EVP_PKEY_free(test->settings->client_rsa_pubkey);
         test->settings->client_rsa_pubkey = NULL;
     }
-#endif /* HAVE_SSL */
+//#endif /* HAVE_SSL */
 
     memset(test->cookie, 0, COOKIE_SIZE);
     test->multisend = 10;	/* arbitrary */

@@ -307,7 +307,7 @@ get_optional_features(void)
     numfeatures++;
 #endif /* HAVE_SO_MAX_PACING_RATE */
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
     if (numfeatures > 0) {
 	strncat(features, ", ",
 		sizeof(features) - strlen(features) - 1);
@@ -315,7 +315,7 @@ get_optional_features(void)
     strncat(features, "authentication",
 	sizeof(features) - strlen(features) - 1);
     numfeatures++;
-#endif /* HAVE_SSL */
+//#endif /* HAVE_SSL */
 
 #if defined(HAVE_SO_BINDTODEVICE)
     if (numfeatures > 0) {

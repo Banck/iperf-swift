@@ -68,10 +68,10 @@
 #include "cjson.h"
 #include "iperf_time.h"
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 #include <openssl/bio.h>
 #include <openssl/evp.h>
-#endif // HAVE_SSL
+//#endif // HAVE_SSL
 
 #include <stdio.h>
 #if !defined(__IPERF_API_H)
@@ -158,12 +158,12 @@ struct iperf_settings
     char      unit_format;          /* -f */
     int       num_ostreams;         /* SCTP initmsg settings */
     int       dont_fragment;        /* Whether to set IP flag Do-Not_Fragment */
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
     char      *authtoken;           /* Authentication token */
     char      *client_username;
     char      *client_password;
     EVP_PKEY  *client_rsa_pubkey;
-#endif // HAVE_SSL
+//#endif // HAVE_SSL
     int	      connect_timeout;	    /* socket connection timeout, in ms */
     int       idle_timeout;         /* server idle time timeout */
     unsigned int snd_timeout; /* Timeout for sending tcp messages in active mode, in us */
@@ -304,11 +304,11 @@ struct iperf_test
 
     int	      ctrl_sck_mss;			/* MSS for the control channel */
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
     char      *server_authorized_users;
     EVP_PKEY  *server_rsa_private_key;
     int       server_skew_threshold;
-#endif // HAVE_SSL
+//#endif // HAVE_SSL
 
     /* boolean variables for Options */
     int       daemon;                           /* -D option */

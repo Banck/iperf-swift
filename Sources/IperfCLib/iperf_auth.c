@@ -38,7 +38,7 @@
 #include <inttypes.h>
 #include <stdint.h>
 
-#if defined(HAVE_SSL)
+//#if defined(HAVE_SSL)
 
 #include <openssl/rsa.h>
 #include <openssl/bio.h>
@@ -354,7 +354,7 @@ int decode_auth_setting(int enable_debug, const char *authtoken, EVP_PKEY *priva
     return (0);
 }
 
-#endif //HAVE_SSL
+//#endif //HAVE_SSL
 
 ssize_t iperf_getpass (char **lineptr, size_t *n, FILE *stream) {
     struct termios old, new;
